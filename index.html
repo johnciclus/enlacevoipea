@@ -1,0 +1,314 @@
+<!-- -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+<title>Modulo Enlace Voipea</title>
+
+<!-- Metadatos convencionales -->
+<meta name="Description" content="Modulo Enlace Voipea" />
+<meta name="Keywords"    content="Centro de llamadas, voipea, talent Corporation" />
+<meta name="Author"      content="Jhon Freddy Garavito Suarez" />
+<meta name="Copyright"   content="2008 - 2009 Talent Corporation &copy;" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<link rel="shortcut icon" href="iconos/talent.ico" tppabs="http://talentcorp.com/iconos/talent.ico" />
+
+<!-- Metadatos Dublin Core -->
+<meta name="DC.Title"             content="Modulo Enlace Voipea" />
+<meta name="DC.Creator"           content="Jhon Freddy Garavito Suarez" />
+<meta name="DC.Subject"           content="Desarrollo de Software social" />
+<meta name="DC.Description"       content="Pagina de enlaces al sistema voipea en el cual se simplificaran las acciones de autenticacion" />
+<meta name="DC.Publisher"         content="TalentCorp.com" />
+<meta name="DC.Date"              content="2009-06-15" />
+<meta name="DC.Type"              content="Text" scheme="DCMIType" />
+<meta name="DC.Format.Medium"     content="text/xml" />
+<meta name="DC.Relation.isPartOf" content="http://html.talentcorp.com/" />
+<meta name="DC.Identifier"        content="http://html.talentcorp.com/index" />
+<meta name="DC.Language"          content="es" />
+<meta name="DC.Rights"            content="(c) 2008 - 2009 by Jhon Freddy Garavito Suarez." />
+
+
+<!-- Hoja de estilos para todos los navegadores -->
+<link rel="stylesheet" href="estilos/tema.css" tppabs="http://talentcorp.com/estilos/tema.css" media="screen,projection" type="text/css" />
+
+<!-- Hoja de estilos para navegadores con suficiente soporte de CSS2 (O7, Gecko) -->
+<link rel="stylesheet" href="estilos/tema2.css" tppabs="http://talentcorp.com/estilos/tema2.css" media="sc&#82;een,projection" type="text/css" />
+
+<script type="text/javascript">
+var estForm=false
+function mostrar(b) {
+    /* Por si acaso se monta un cuadro sobre el otro en IE4... */
+    var d = document
+    if (d.all) {
+        d.all.contenidos.style.zIndex = 0
+        d.all.menu.style.zIndex = 0
+        b.style.zIndex = 1
+    }
+}
+
+function init() {
+    /* NOT INVENTED HERE */
+    if (document.all.contenidos.all[3].style.setExpression) {
+        da = document.all
+        da.menu.all[3].style.setExpression('height', 'document.body.clientHeight - 90')
+        da.contenidos.all[3].style.setExpression('height', 'document.body.clientHeight - 90')
+        da.menu.style.left = "10px"
+        da.contenidos.style.setExpression('left', '20 + document.all.menu.offsetWidth')
+        da.contenidos.style.setExpression('width', 'document.body.clientWidth - da.menu.offsetWidth - 30')
+    }
+}
+function asigVal()
+	{
+		var nomCta
+		var pasCta
+		var valLog
+		var valPas
+		for( i=1;i<=8;i++)
+		{
+			nomCta = String('UsuCab'+i)
+			pasCta = String('PasCab'+i)
+			valLog = parseInt(mostrarLoginCook(String(i)))
+			if (isNaN(valLog))
+			{
+				valLog=0
+			}
+			valPas = parseInt(mostrarPasswCook(String(i)))
+			if (isNaN(valPas))
+			{
+				valPas=0
+			}
+			eval("document.asigCtas."+nomCta+".value="+valLog)
+			eval("document.asigCtas."+pasCta+".value="+valPas)
+		}
+	}
+function detecLogin(valorCab)
+	{
+		cta=valorCab.substring(3,valorCab.length)
+		document.form.pr_login.value=mostrarLoginCook(cta);
+		document.form.pr_password.value=mostrarPasswCook(cta);
+	}
+function intrDatCook(numCab,usuLogin,passLogin) 
+	{			
+		if (numCab != "" && usuLogin != "" && passLogin != "") 
+		{
+			document.cookie=numCab+"="+usuLogin+","+passLogin+" "+"; expires="+Caduca(365)+"; path=/"
+		}
+	}
+function mostrarLoginCook(numCab)
+	{
+		var cookies = document.cookie
+		var ini = cookies.indexOf( numCab + "=" )
+		if (ini == -1)
+		{
+			ini = cookies.length
+		}
+		else
+		{
+			ini +=numCab.length+1
+		}
+		var fin = cookies.indexOf(",",ini)
+		if (fin == -1)
+		{
+			fin = cookies.length
+		}
+		var inf = cookies.substring(ini,fin)
+		return inf
+	}
+function mostrarPasswCook(numCab)
+	{
+		var cookies = document.cookie
+		var ini = cookies.indexOf( numCab + "=" )
+		if (ini == -1)
+		{
+			ini = cookies.length
+		}
+		else
+		{
+			ini =cookies.indexOf(",",ini)+1
+		}
+		var fin = cookies.indexOf(";",ini)
+		if (fin == -1)
+		{
+			fin = cookies.length
+		}
+		var inf = cookies.substring(ini,fin)
+		return inf
+	}
+function Caduca(dias) 
+{
+	var hoy = new Date()										
+	var msEnXDias = eval(dias) * 24 * 60 * 60 * 1000	
+	hoy.setTime(hoy.getTime() + msEnXDias)			
+	return (hoy.toGMTString())
+}
+function BorrarCookie(cta) 
+{
+	document.cookie = cta + "=; expires=" + Caduca(-1) + "; path=/"
+}
+function GuardarVal()
+{
+	var nomCta
+	var pasCta
+	var valLog
+	var valPas
+	
+	for( i=1;i<=8;i++)
+		{
+			nomCta = String('UsuCab'+i)
+			pasCta = String('PasCab'+i)
+			valLog = eval("document.asigCtas."+nomCta+".value")
+			if (valLog == null || valLog == "" || valLog == " " || isNaN(valLog))
+			{
+				valLog=0
+			}
+			valPas = eval("document.asigCtas."+pasCta+".value")
+			if (valPas == null || valPas == "" || valPas == " " || isNaN(valPas))
+			{
+				valPas=0
+			}
+			intrDatCook(i,valLog,valPas)
+		}	
+}
+function verFomulario()
+{
+	if(estForm==false)
+	{
+		document.getElementById('formDesp').style.display = "inline"
+		estForm=true
+	}
+	else
+	{
+		document.getElementById('formDesp').style.display = "none"
+		estForm=false
+	}
+}
+</script>	
+</head>
+
+<body onLoad="asigVal()">
+
+<h1><img src="imagenes/logo.jpg" tppabs="http://talentcorp.com/imagenes/logo.jpg" width="150" height="47" alt="ACOGER - Talent Corporation" title=""/></h1>
+
+<div class="box-1" id="contenidos" onclick="mostrar(this)">
+<div class="box-2">
+<div class="box-3">
+<div class="box-4">
+<div class="box-5">
+<div class="angosto">
+	<form name="form" method="POST" action="http://66.36.231.73/A2BCustomer_UI/userinfo.php">
+	<input type="hidden" name="done" value="submit_log">
+	<input type="hidden" name="pr_login" value=0>
+	<input type="hidden" name="pr_password" value=0>
+	<div>
+	<p class="destacado">Enlace Voipea</p>
+	<br>
+	<br>
+	<br>
+	<br>
+	<p class="destacado">Cabinas Nacionales</p>
+	<br>
+	<br>
+	<br>
+	<input type="submit" name="Cab1" value="Cabina 1" class="boton" onclick="detecLogin(this.name)">
+	<input type="submit" name="Cab2" value="Cabina 2" class="boton" onclick="detecLogin(this.name)">
+	<input type="submit" name="Cab3" value="Cabina 3" class="boton" onclick="detecLogin(this.name)">
+	<input type="submit" name="Cab4" value="Cabina 4" class="boton" onclick="detecLogin(this.name)">
+	</div>
+	<div>
+	<br>
+	<br>
+	<p class="destacado">Cabinas Internacionales</p>
+	<br>
+	<br>
+	<br>
+	<input type="submit" name="Cab5" value="Cabina 5" class="boton" onclick="detecLogin(this.name)">
+	<input type="submit" name="Cab6" value="Cabina 6" class="boton" onclick="detecLogin(this.name)">
+	<input type="submit" name="Cab7" value="Cabina 7" class="boton" onclick="detecLogin(this.name)">
+	<input type="submit" name="Cab8" value="Cabina 8" class="boton" onclick="detecLogin(this.name)">
+	</div>
+	</form>
+</div>
+
+<p class="destacado"><strong><a href="javascript:verFomulario();" >Aministracion de las cuentas</a></strong></p>
+<hr class="oculto" />
+
+<div class="pie">
+<br>
+<br>
+<div id="formDesp" class="angosto">
+	<form name="asigCtas" method="POST" class="contenidos">
+<pre>
+<strong>
+	<span>Nombre Usuario                         </span><span> Contrase&ntilde;a Usuario</span>
+</strong>
+</pre>
+<strong>	
+	<div>
+	<LABEL> Cabina 1 </LABEL>
+	<input type="text" name="UsuCab1"/>
+	<input type="text" name="PasCab1"/>
+	</div>
+	
+	<div>
+	<LABEL> Cabina 2 </LABEL>
+	<input type="text" name="UsuCab2"/>
+	<input type="text" name="PasCab2"/>
+	</div>
+	
+	<div>
+	<LABEL> Cabina 3 </LABEL>
+	<input type="text" name="UsuCab3"/>
+	<input type="text" name="PasCab3"/>
+	</div>
+	
+	<div>
+	<LABEL> Cabina 4 </LABEL>
+	<input type="text" name="UsuCab4"/>
+	<input type="text" name="PasCab4"/>
+	</div>
+	
+	<div>
+	<LABEL> Cabina 5</LABEL>
+	<input type="text" name="UsuCab5"/>
+	<input type="text" name="PasCab5"/>
+	</div>
+	
+	<div>
+	<LABEL> Cabina 6</LABEL>
+	<input type="text" name="UsuCab6"/>
+	<input type="text" name="PasCab6"/>
+	</div>
+	
+	<div>
+	<LABEL> Cabina 7</LABEL>
+	<input type="text" name="UsuCab7"/>
+	<input type="text" name="PasCab7"/>
+	</div>
+	<div>
+	<LABEL> Cabina 8</LABEL>
+	<input type="text" name="UsuCab8"/>
+	<input type="text" name="PasCab8"/>
+	</div>
+	
+	<div>
+	<input type="button" name="btnGuardar" value = "Guardar Valores" class="boton" onclick="GuardarVal()"/>
+	<input type="reset" name="btnLimpiar" value = "Limpiar Valores" class="boton" onclick="MostrarInfo()"/>
+	</div>
+</strong>
+	</form>
+</div>
+<p>
+ 
+ <img id="validcss" src="imagenes/vcss.gif" tppabs="http://talentcorp.com/imagenes/vcss.gif" alt="CSS válido" width="88" height="31" />
+</p>
+<p>Aplicativo Web mantenido por Jhon Freddy Garavito (<span class="email">admin arroba talentcorp punto com</span>).</p>
+<p>Última modificación: 15/06/2009 - &copy; 2008 - 2009 Jhon Freddy Garavito y Talent Corporation</p>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>
